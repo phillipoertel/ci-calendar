@@ -422,10 +422,13 @@ const ICAL_URL =
   '7cd67ecc1e05891f0a89b08a145dca65102fb64fa16b18e4385f89895d2ac18f%40group.calendar.google.com' +
   '/public/basic.ics';
 
-// Public CORS proxies – tried in order until one succeeds
 const PROXIES = [
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.me-453.workers.dev/?url=${encodeURIComponent(url)}`
+  // url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  // url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  // url => `https://cors-anywhere.herokuapp.com/${url}`,
+  // url => `https://proxy.cors.sh/${url}`,
+  // url => `https://corsproxy.org/?${encodeURIComponent(url)}`,
 ];
 
 // ─── State ─────────────────────────────────────────────────────────────────
