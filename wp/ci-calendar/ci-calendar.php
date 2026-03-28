@@ -31,5 +31,3 @@ function ci_calendar_shortcode() {
 }
 
 add_shortcode('ci-calendar', 'ci_calendar_shortcode');
-
-?>
