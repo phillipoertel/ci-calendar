@@ -1,15 +1,18 @@
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,300;0,400;0,600;0,800;1,300;1,400;1,600;1,800&display=fallback" rel="stylesheet">
 <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:        #ffffff;
-      --surface:   #f8f9fa;
-      --border:    #e9ecef;
-      --accent:    #007bff;
-      --accent2:   #6f42c1;
-      --text:      #212529;
-      --muted:     #6c757d;
+      --surface:   #fafafa;
+      --border:    #e0e0e0;
+      --accent:    #222;
+      --accent2:   #222;
+      --text:      #333;
+      --muted:     #767676;
       --today-bg:  #e3f2fd;
       --today-acc: #1976d2;
       --past:      #adb5bd;
@@ -17,36 +20,50 @@
     }
 
     .ci-calendar {
-      /* Inherit typography and colors from parent page */
-      font-size: inherit;
-      line-height: inherit;
+      font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
       color: inherit;
       background: transparent;
     }
 
-    .controls {
+    .top-bar {
       display: flex;
-      justify-content: center;
-      gap: 1rem;
+      justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 2rem;
-      padding: 1rem 0;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      max-width: 900px;
+      margin-left: 0;
+      margin-right: auto;
+      padding: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .toggle-btn {
-      background: var(--border);
-      border: 1px solid transparent;
+      background: none;
+      border: none;
       color: var(--muted);
-      padding: 0.5rem 1.5rem;
-      border-radius: 8px;
+      padding: 0.25rem 0;
+      border-radius: 0;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: color 0.15s;
+      margin-right: 1rem;
     }
-    .toggle-btn:hover { border-color: var(--accent); color: var(--text); }
-    .toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .toggle-btn:focus { outline: none; }
+    .toggle-btn:hover { color: var(--text); }
+    .toggle-btn.active { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
 
     #status {
       text-align: center;
@@ -81,8 +98,8 @@
 
     main {
       max-width: 900px;
-      margin: 0 auto;
-      padding: 0 1rem 3rem;
+      margin: 0 auto 0 0;
+      padding: 0 1rem 3rem 0;
     }
 
     /* ── Month group ─────────────────────────────── */
@@ -102,13 +119,13 @@
     /* ── Schedule card (deduplicated recurring view) ── */
     .schedule-card {
       display: grid;
-      grid-template-columns: 110px 1fr;
+      grid-template-columns: 138px 1fr;
       gap: 0 1rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 0.85rem 1rem;
-      margin-bottom: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.4rem;
       transition: border-color 0.15s;
       cursor: default;
     }
@@ -148,8 +165,8 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 0.85rem 1rem;
-      margin-bottom: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.4rem;
       transition: border-color 0.15s;
       cursor: default;
     }
@@ -203,15 +220,25 @@
       color: var(--text);
     }
 
+    .event-loc-link {
+      font-weight: 400;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-decoration: none;
+      margin-left: 0.3rem;
+    }
+    .event-loc-link:hover { text-decoration: underline; }
+
     .event-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem 1rem;
-      margin-top: 0.3rem;
+      margin-top: 0;
     }
 
     .meta-chip {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
+      font-weight: 400;
       color: var(--muted);
       display: flex;
       align-items: center;
@@ -221,7 +248,7 @@
     .meta-chip svg { flex-shrink: 0; opacity: 0.7; }
 
     .event-desc {
-      margin-top: 0.5rem;
+      margin-top: 0;
       font-size: 0.82rem;
       color: var(--muted);
       white-space: pre-wrap;
@@ -234,7 +261,7 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      background: #2a2250;
+      background: #fff;
       color: var(--accent2);
       border-radius: 4px;
       padding: 1px 5px;
@@ -258,27 +285,26 @@
 
     /* ── Subscribe bar ───────────────────────────── */
     .subscribe-bar {
-      text-align: center;
-      padding: 0.6rem 0 0.9rem;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
     }
 
     .info-link {
       background: none;
       border: none;
       font-family: inherit;
-      font-size: 0.8rem;
-      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: #222;
       cursor: pointer;
       padding: 0;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
 
+    .info-link:focus { outline: none; }
     .info-link:hover { opacity: 0.75; }
 
     .pipe {
@@ -369,24 +395,26 @@
       .event-card { grid-template-columns: 52px 1fr; gap: 0 0.75rem; padding: 0.75rem; }
       .date-day { font-size: 1.3rem; }
       .controls { gap: 0.5rem; }
-      .toggle-btn { padding: 0.4rem 1rem; font-size: 0.9rem; }
+      .toggle-btn { padding: 0.2rem 0; font-size: 0.75rem; }
     }
   </style>
 
-<div class="ci-calendar">
-  <div class="controls">
-    <button class="toggle-btn active" id="btn-schedule" onclick="setFilter('schedule')">Weekly</button>
-    <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">One-off</button>
-    <button class="toggle-btn" id="btn-recurring" onclick="setFilter('recurring')">All</button>
-  </div>
+	<link rel="stylesheet" id="twentyseventeen-fonts-css" href="sites/ci-cph.dk_files/font-libre-franklin.css" media="all">
+	<link rel="stylesheet" id="twentyseventeen-style-css" href="sites/ci-cph.dk_files/style.css" media="all">
+	<link rel="stylesheet" id="twentyseventeen-block-style-css" href="sites/ci-cph.dk_files/blocks.css" media="all">
 
-<div class="subscribe-bar">
-  <button class="info-link" onclick="openInfoModal('whats-this')">What's this?</button>
-  <span class="pipe">|</span>
-  <button class="info-link" onclick="openSubscribeModal()">Add to my calendar</button>
-  <span class="pipe">|</span>
-  <button class="info-link" onclick="openInfoModal('send-update')">Report error / update</button>
-</div>
+<div class="ci-calendar">
+  <div class="top-bar">
+    <div class="controls">
+      <button class="toggle-btn active" id="btn-schedule" onclick="setFilter('schedule')">Weekly</button>
+      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">One-off</button>
+      <button class="toggle-btn" id="btn-recurring" onclick="setFilter('recurring')">All</button>
+    </div>
+    <div class="subscribe-bar">
+      <button class="info-link" onclick="openSubscribeModal()">Subscribe to this calendar</button>
+      <button class="info-link" onclick="openInfoModal('send-update')">Suggest a change</button>
+    </div>
+  </div>
 
 <div id="status">
   <div class="spinner"></div><br>Loading calendar…
@@ -409,7 +437,7 @@
   <div class="modal-box">
     <button class="modal-close" onclick="closeSubscribeModal()">&times;</button>
     <div class="modal-title">Subscribe to Calendar</div>
-    <div class="modal-desc">Add this calendar to your app to stay up to date.</div>
+    <div class="modal-desc">Add this calendar to your own calendar app to stay up to date. Click the button for the calendar you use</div>
     <div class="modal-links" id="modal-links"></div>
   </div>
 </div>
@@ -726,19 +754,21 @@ function buildCard(ev) {
   const infoCol = document.createElement('div');
   infoCol.className = 'info-col';
 
+  const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
+  const locLink  = ev.loc
+    ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
+    : '';
+
   const titleEl = document.createElement('div');
   titleEl.className = 'event-title';
   titleEl.innerHTML =
-    escHtml(ev.title) +
+    escHtml(ev.title) + locLink +
     (ev.recur   ? '<span class="recurring-badge">↻ recurring</span>' : '') +
     (isToday(ev.start.date) ? '<span class="today-badge">Today</span>' : '');
 
   const meta = document.createElement('div');
   meta.className = 'event-meta';
-  const locChip = ev.loc
-    ? `<span class="meta-chip">${pinIcon} <a href="https://maps.google.com/?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(ev.loc)}</a></span>`
-    : '';
-  meta.innerHTML = `<span class="meta-chip">${clockIcon} ${fmtTimeRange(ev)}</span>` + locChip;
+  meta.innerHTML = `<span class="meta-chip">${clockIcon} ${fmtTimeRange(ev)}</span>`;
 
   infoCol.appendChild(titleEl);
   infoCol.appendChild(meta);
@@ -822,6 +852,9 @@ function renderSchedule(events) {
     return true;
   });
 
+  // Sort Mon–Sun (getDay(): Sun=0 → mapped to 6, Mon=1 → 0, …)
+  unique.sort((a, b) => (a.start.date.getDay() + 6) % 7 - (b.start.date.getDay() + 6) % 7);
+
   if (!unique.length) {
     main.innerHTML = '<p style="color:var(--muted);text-align:center;padding:3rem 0">No recurring events found.</p>';
     main.style.display = '';
@@ -834,21 +867,23 @@ function renderSchedule(events) {
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
-    recurCol.innerHTML = `<span class="recur-icon">↻</span><span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span>`;
+    recurCol.innerHTML = `<span class="recur-icon">↻</span><span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span><span class="recur-label">${escHtml(fmtTimeRange(ev))}</span>`;
 
     const infoCol = document.createElement('div');
     infoCol.className = 'info-col';
 
+    const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
+    const locLinkS  = ev.loc
+      ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
+      : '';
+
     const titleEl = document.createElement('div');
     titleEl.className = 'event-title';
-    titleEl.textContent = ev.title;
+    titleEl.innerHTML = escHtml(ev.title) + locLinkS;
 
     const meta = document.createElement('div');
     meta.className = 'event-meta';
-    const locChipS = ev.loc
-      ? `<span class="meta-chip">${pinIcon} <a href="https://maps.google.com/?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(ev.loc)}</a></span>`
-      : '';
-    meta.innerHTML = `<span class="meta-chip">${clockIcon} ${fmtTimeRange(ev)}</span>` + locChipS;
+    meta.innerHTML = '';
 
     infoCol.appendChild(titleEl);
     infoCol.appendChild(meta);
@@ -870,15 +905,11 @@ function renderSchedule(events) {
 
 // ─── Info modal ────────────────────────────────────────────────────────────
 const INFO_CONTENT = {
-  'whats-this': {
-    title: "What's this?",
-    body: "It\u2019s a minimal, one-stop list of all CI events for people around Copenhagen.<p>Please subscribe to it with your calendar app, rather than viewing it here.",
-  },
   'send-update': {
-    title: 'Report error / update',
+    title: 'Suggest a change',
     body: () => {
-      const em = ['ci-copenhagen', 'phillipoertel', 'com'].join('\u0040').replace('\u0040phillipoertel', '.phillipoertel@');
-      // em = ci-copenhagen@phillipoertel.com, assembled at runtime
+      const em = ['ci-copenhagen', 'email', 'com'].join('\u0040').replace('\u0040email', '.email@');
+      // em = ci-copenhagen@email.com, assembled at runtime
       return `Please send us your updates to <a href="mailto:${em}">${em}</a>. You\u2019re also welcome to help maintain the Google calendar, just write to us.`;
     },
   },
