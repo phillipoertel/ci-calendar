@@ -22,17 +22,14 @@ function ci_calendar_shortcode() {
     
     ob_start(); ?>
     <link rel="stylesheet" href="<?php echo esc_url(plugin_dir_url(__FILE__) . 'ci-calendar.css'); ?>">
-    <div id="my-calendar"></div>
+    <?php echo file_get_contents(plugin_dir_path(__FILE__) . 'ci-calendar.html'); ?>
     <script src="<?php echo esc_url(plugin_dir_url(__FILE__) . 'ci-calendar.js'); ?>"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            initCalendar(CalendarData.ical);
-        });
+        initCalendar(<?php echo json_encode($ical); ?>);
     </script>
     <?php return ob_get_clean();
 }
 
 add_shortcode('ci-calendar', 'ci_calendar_shortcode');
 
-?> 
-
+?>

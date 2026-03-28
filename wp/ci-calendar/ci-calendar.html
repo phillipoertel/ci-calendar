@@ -1,0 +1,39 @@
+<div class="ci-calendar">
+  <div class="top-bar">
+    <div class="controls">
+      <button class="toggle-btn active" id="btn-schedule" onclick="setFilter('schedule')">Weekly</button>
+      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">Other</button>
+      <button class="toggle-btn" id="btn-recurring" onclick="setFilter('recurring')">All</button>
+    </div>
+    <div class="subscribe-bar">
+      <button class="info-link" onclick="openSubscribeModal()">Subscribe to this calendar</button>
+      <button class="info-link" onclick="openInfoModal('send-update')">Suggest a change</button>
+    </div>
+  </div>
+
+<div id="status">
+  <div class="spinner"></div><br>Loading calendar…
+</div>
+<div id="error-box"></div>
+
+<main id="ci-calendar-main" style="display:none"></main>
+
+<!-- Info modal -->
+<div id="info-modal" class="modal-backdrop" onclick="closeInfoModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeInfoModal()">&times;</button>
+    <div class="modal-title" id="info-modal-title"></div>
+    <div class="modal-desc" id="info-modal-body"></div>
+  </div>
+</div>
+
+<!-- Subscribe modal -->
+<div id="subscribe-modal" class="modal-backdrop" onclick="closeSubscribeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSubscribeModal()">&times;</button>
+    <div class="modal-title">Subscribe to Calendar</div>
+    <div class="modal-desc">Add this calendar to your own calendar app to stay up to date. Click the button for the calendar you use</div>
+    <div class="modal-links" id="modal-links"></div>
+  </div>
+</div>
+</div>
