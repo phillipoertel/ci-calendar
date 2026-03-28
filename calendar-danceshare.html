@@ -400,7 +400,7 @@
   <div class="top-bar">
     <div class="controls">
       <button class="toggle-btn active" id="btn-schedule" onclick="setFilter('schedule')">Weekly</button>
-      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">One-off</button>
+      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">Other</button>
       <button class="toggle-btn" id="btn-recurring" onclick="setFilter('recurring')">All</button>
     </div>
     <div class="subscribe-bar">
@@ -444,12 +444,9 @@ const ICAL_URL =
   '/public/basic.ics';
 
 const PROXIES = [
-  url => `https://corsproxy.me-453.workers.dev/?url=${encodeURIComponent(url)}`
-  // url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  // url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  // url => `https://cors-anywhere.herokuapp.com/${url}`,
-  // url => `https://proxy.cors.sh/${url}`,
-  // url => `https://corsproxy.org/?${encodeURIComponent(url)}`,
+  url => `https://corsproxy.me-453.workers.dev/?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
 ];
 
 // ─── State ─────────────────────────────────────────────────────────────────
@@ -749,7 +746,7 @@ function buildCard(ev) {
 
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
   const locLink  = ev.loc
-    ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
+    ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
     : '';
 
   const titleEl = document.createElement('div');
@@ -867,7 +864,7 @@ function renderSchedule(events) {
 
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
     const locLinkS  = ev.loc
-      ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
+      ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
       : '';
 
     const titleEl = document.createElement('div');
@@ -1002,7 +999,7 @@ function applyFilter() {
     const recurringCount = futureEvents.filter(e => e.recur).length;
     const scheduleCount = new Set(futureEvents.filter(e => e.recur).map(e => e.uid)).size;
     document.getElementById('btn-schedule').textContent = `Weekly (${scheduleCount})`;
-    document.getElementById('btn-non-recurring').textContent = `One-off (${nonRecurringCount})`;
+    document.getElementById('btn-non-recurring').textContent = `Other (${nonRecurringCount})`;
     document.getElementById('btn-recurring').textContent = `All (${recurringCount})`;
     statusEl.style.display = 'none';
     applyFilter();

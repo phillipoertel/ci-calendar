@@ -54,8 +54,8 @@
       padding: 0.25rem 0;
       border-radius: 0;
       cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.875rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       transition: color 0.15s;
@@ -99,7 +99,7 @@
     main {
       max-width: 900px;
       margin: 0 auto 0 0;
-      padding: 0 1rem 3rem 0;
+      padding: 0 0 3rem 0;
     }
 
     /* ── Month group ─────────────────────────────── */
@@ -119,25 +119,24 @@
     /* ── Schedule card (deduplicated recurring view) ── */
     .schedule-card {
       display: grid;
-      grid-template-columns: 138px 1fr;
+      grid-template-columns: 108px 1fr;
       gap: 0 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-bottom: 1px solid var(--border);
       padding: 0.5rem 1rem;
       margin-bottom: 0.4rem;
       transition: border-color 0.15s;
       cursor: default;
     }
 
+    .schedule-card:last-child { border-bottom: none; }
+
     .schedule-card:hover { border-color: var(--accent); }
 
     .recur-col {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
-      padding-top: 3px;
       gap: 4px;
       min-width: 0;
     }
@@ -149,7 +148,7 @@
     }
 
     .recur-label {
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--muted);
       text-align: center;
@@ -162,14 +161,14 @@
       display: grid;
       grid-template-columns: 64px 1fr;
       gap: 0 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-bottom: 1px solid var(--border);
       padding: 0.5rem 1rem;
       margin-bottom: 0.4rem;
       transition: border-color 0.15s;
       cursor: default;
     }
+
+    .event-card:last-child { border-bottom: none; }
 
     .event-card:hover { border-color: var(--accent); }
 
@@ -407,7 +406,7 @@
   <div class="top-bar">
     <div class="controls">
       <button class="toggle-btn active" id="btn-schedule" onclick="setFilter('schedule')">Weekly</button>
-      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">One-off</button>
+      <button class="toggle-btn" id="btn-non-recurring" onclick="setFilter('non-recurring')">Other</button>
       <button class="toggle-btn" id="btn-recurring" onclick="setFilter('recurring')">All</button>
     </div>
     <div class="subscribe-bar">
@@ -451,12 +450,9 @@ const ICAL_URL =
   '/public/basic.ics';
 
 const PROXIES = [
-  url => `https://corsproxy.me-453.workers.dev/?url=${encodeURIComponent(url)}`
-  // url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  // url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  // url => `https://cors-anywhere.herokuapp.com/${url}`,
-  // url => `https://proxy.cors.sh/${url}`,
-  // url => `https://corsproxy.org/?${encodeURIComponent(url)}`,
+  url => `https://corsproxy.me-453.workers.dev/?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
 ];
 
 // ─── State ─────────────────────────────────────────────────────────────────
@@ -756,7 +752,7 @@ function buildCard(ev) {
 
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
   const locLink  = ev.loc
-    ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
+    ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
     : '';
 
   const titleEl = document.createElement('div');
@@ -867,14 +863,14 @@ function renderSchedule(events) {
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
-    recurCol.innerHTML = `<span class="recur-icon">↻</span><span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span><span class="recur-label">${escHtml(fmtTimeRange(ev))}</span>`;
+    recurCol.innerHTML = `<span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span><span class="recur-label">${escHtml(fmtTimeRange(ev))}</span>`;
 
     const infoCol = document.createElement('div');
     infoCol.className = 'info-col';
 
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
     const locLinkS  = ev.loc
-      ? ` <a class="event-loc-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
+      ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
       : '';
 
     const titleEl = document.createElement('div');
@@ -990,8 +986,7 @@ function applyFilter() {
     renderSchedule(future);
   } else {
     let evs = future;
-    if (filter === 'recurring') evs = evs.filter(e => e.recur);
-    else if (filter === 'non-recurring') evs = evs.filter(e => !e.recur);
+    if (filter === 'non-recurring') evs = evs.filter(e => !e.recur);
     renderEvents(evs);
   }
 }
@@ -1009,8 +1004,8 @@ function applyFilter() {
     const recurringCount = futureEvents.filter(e => e.recur).length;
     const scheduleCount = new Set(futureEvents.filter(e => e.recur).map(e => e.uid)).size;
     document.getElementById('btn-schedule').textContent = `Weekly (${scheduleCount})`;
-    document.getElementById('btn-non-recurring').textContent = `One-off (${nonRecurringCount})`;
-    document.getElementById('btn-recurring').textContent = `All (${recurringCount})`;
+    document.getElementById('btn-non-recurring').textContent = `Other (${nonRecurringCount})`;
+    document.getElementById('btn-recurring').textContent = `All (${futureEvents.length})`;
     statusEl.style.display = 'none';
     applyFilter();
   } catch (err) {
