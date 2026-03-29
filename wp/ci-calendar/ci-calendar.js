@@ -1,3 +1,12 @@
+// ─── Logging ───────────────────────────────────────────────────────────────
+const isDev = window.location.hostname !== 'danceshare.dk';
+function log(...args) { if (isDev) console.log('[ci-calendar]', ...args); }
+
+function isDanish(loc) {
+  const l = loc.toLowerCase();
+  return l.includes('denmark') || l.includes('danmark') || l.includes('dänemark');
+}
+
 // ─── State ─────────────────────────────────────────────────────────────────
 let allEvents = [];
 let filter    = 'schedule';
@@ -222,8 +231,9 @@ function buildCard(ev) {
   infoCol.className = 'info-col';
 
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
+  const flag     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
   const locLink  = ev.loc
-    ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>`
+    ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>${flag ? ' <span style="position:relative;top:3px">' + flag + '</span>' : ''}`
     : '';
 
   const titleEl = document.createElement('div');
@@ -329,8 +339,9 @@ function renderSchedule(events) {
     infoCol.className = 'info-col';
 
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
+    const flagS     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
     const locLinkS  = ev.loc
-      ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>`
+      ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>${flagS ? ' <span style="position:relative;top:3px">' + flagS + '</span>' : ''}`
       : '';
 
     const titleEl = document.createElement('div');
@@ -407,6 +418,7 @@ function initCalendar(raw) {
 
   try {
     allEvents = expandEvents(parseICal(raw));
+    allEvents.forEach(e => { if (e.loc) log('Location:', e.title, '→', e.loc); });
     const futureEvents = allEvents.filter(e => !isPast(e));
     const nonRecurringCount = futureEvents.filter(e => !e.recur).length;
     const scheduleCount = new Set(futureEvents.filter(e => e.recur).map(e => e.uid)).size;
