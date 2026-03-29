@@ -7,6 +7,7 @@
     </div>
     <div class="subscribe-bar">
       <button class="info-link" onclick="openSubscribeModal()">Subscribe to this calendar</button>
+      <span class="pipe subscribe-pipe" aria-hidden="true">|</span>
       <button class="info-link" onclick="openInfoModal('send-update')">Suggest a change</button>
     </div>
   </div>
@@ -31,8 +32,8 @@
 <div id="subscribe-modal" class="modal-backdrop" onclick="closeSubscribeModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeSubscribeModal()">&times;</button>
-    <div class="modal-title">Subscribe to Calendar</div>
-    <div class="modal-desc">Add this calendar to your own calendar app to stay up to date. Click the button for the calendar you use</div>
+    <div class="modal-title">Subscribe to calendar</div>
+    <div class="modal-desc">To stay up to date, add this calendar to your calendar app. Which one do you use?</div>
     <div class="modal-links" id="modal-links"></div>
   </div>
 </div>

@@ -230,8 +230,8 @@ function buildCard(ev) {
   titleEl.className = 'event-title';
   titleEl.innerHTML =
     escHtml(ev.title) + locLink +
-    (ev.recur ? '<span class="recurring-badge">↻ recurring</span>' : '') +
-    (isToday(ev.start.date) ? '<span class="today-badge">Today</span>' : '');
+    (isToday(ev.start.date) ? '<span class="today-badge">Today</span>' : '') +
+    (ev.recur ? '<span class="recurring-badge">↻ recurring</span>' : '');
 
   const meta = document.createElement('div');
   meta.className = 'event-meta';
@@ -471,3 +471,20 @@ function closeSubscribeModal(e) {
     document.getElementById('subscribe-modal').classList.remove('open');
   }
 }
+
+// ─── Wrap detection ────────────────────────────────────────────────────────
+(function () {
+  const topBar   = document.querySelector('.top-bar');
+  const controls = document.querySelector('.controls');
+  const subBar   = document.querySelector('.subscribe-bar');
+  if (!topBar || !controls || !subBar) return;
+
+  function updateWrapped() {
+    const wrapped = subBar.getBoundingClientRect().top > controls.getBoundingClientRect().top + 2;
+    topBar.classList.toggle('is-wrapped', wrapped);
+  }
+
+  new ResizeObserver(updateWrapped).observe(topBar);
+  window.addEventListener('resize', updateWrapped);
+  updateWrapped();
+}());
