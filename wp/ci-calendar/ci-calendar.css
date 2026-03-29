@@ -118,6 +118,11 @@
 
     .schedule-card:hover { border-color: var(--accent); }
 
+    .schedule-card.is-today {
+      background: var(--today-bg);
+      border-color: var(--today-acc);
+    }
+
     .recur-col {
       display: flex;
       flex-direction: column;

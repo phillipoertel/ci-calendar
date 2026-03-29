@@ -51,6 +51,10 @@ function parseEvent(ev) {
   if (start.allDay && end?.allDay) {
     const diff = (end.date - start.date) / 86400000;
     if (diff > 1) multiDay = true;
+  } else if (end && !start.allDay && !end.allDay) {
+    const startDay = new Date(start.date); startDay.setHours(0,0,0,0);
+    const endDay   = new Date(end.date);   endDay.setHours(0,0,0,0);
+    if (endDay > startDay) multiDay = true;
   }
 
   return { start, end, title, desc, loc, recur, uid, multiDay };
@@ -150,10 +154,21 @@ function fmtTime(d) {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function linkifyDesc(text) {
+  return text.replace(/https?:\/\/[^\s<)]+/g, '<a href="$&" target="_blank" rel="noopener">More info</a>');
+}
+
+function fmtDateTime(d) {
+  return d.toLocaleDateString([], {month:'short',day:'numeric'}) + ' ' + fmtTime(d);
+}
+
 function fmtTimeRange(ev) {
   if (ev.start.allDay && ev.multiDay) {
     const endD = new Date(ev.end.date); endD.setDate(endD.getDate() - 1);
     return `${ev.start.date.toLocaleDateString([], {month:'short',day:'numeric'})} – ${endD.toLocaleDateString([], {month:'short',day:'numeric'})}`;
+  }
+  if (ev.multiDay && ev.end && !ev.start.allDay && !ev.end.allDay) {
+    return `${fmtDateTime(ev.start.date)} – ${fmtDateTime(ev.end.date)}`;
   }
   if (ev.start.allDay) return 'All day';
   const s = fmtTime(ev.start.date);
@@ -253,7 +268,7 @@ function buildCard(ev) {
   if (ev.desc.trim()) {
     const descEl = document.createElement('div');
     descEl.className = 'event-desc';
-    descEl.innerHTML = ev.desc.trim();
+    descEl.innerHTML = linkifyDesc(ev.desc.trim());
     infoCol.appendChild(descEl);
   }
 
@@ -330,6 +345,7 @@ function renderSchedule(events) {
   for (const ev of unique) {
     const card = document.createElement('div');
     card.className = 'schedule-card';
+    if (ev.start.date.getDay() === today.getDay()) card.classList.add('is-today');
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
@@ -346,14 +362,15 @@ function renderSchedule(events) {
 
     const titleEl = document.createElement('div');
     titleEl.className = 'event-title';
-    titleEl.innerHTML = escHtml(ev.title) + locLinkS;
+    titleEl.innerHTML = escHtml(ev.title) + locLinkS +
+      (ev.start.date.getDay() === today.getDay() ? '<span class="today-badge">Today</span>' : '');
 
     infoCol.appendChild(titleEl);
 
     if (ev.desc.trim()) {
       const descEl = document.createElement('div');
       descEl.className = 'event-desc';
-      descEl.innerHTML = ev.desc.trim();
+      descEl.innerHTML = linkifyDesc(ev.desc.trim());
       infoCol.appendChild(descEl);
     }
 
@@ -418,7 +435,10 @@ function initCalendar(raw) {
 
   try {
     allEvents = expandEvents(parseICal(raw));
-    allEvents.forEach(e => { if (e.loc) log('Location:', e.title, '→', e.loc); });
+    allEvents.forEach(e => {
+      if (e.loc) log('Location:', e.title, '→', e.loc);
+      if (e.desc) log('Description:', e.title, '→', e.desc);
+    });
     const futureEvents = allEvents.filter(e => !isPast(e));
     const nonRecurringCount = futureEvents.filter(e => !e.recur).length;
     const scheduleCount = new Set(futureEvents.filter(e => e.recur).map(e => e.uid)).size;
