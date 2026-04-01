@@ -196,7 +196,7 @@ function escHtml(s) {
 
 const clockIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
 
-function renderEvents(events) {
+function renderEvents(events, subtitle) {
   const main = document.getElementById('ci-calendar-main');
   main.innerHTML = '';
 
@@ -204,6 +204,13 @@ function renderEvents(events) {
     main.innerHTML = '<p style="color:var(--muted);text-align:center;padding:3rem 0">No events found.</p>';
     main.style.display = '';
     return;
+  }
+
+  if (subtitle) {
+    const sub = document.createElement('p');
+    sub.className = 'section-subtitle';
+    sub.textContent = subtitle;
+    main.appendChild(sub);
   }
 
   const groups = new Map();
@@ -248,7 +255,7 @@ function buildCard(ev) {
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
   const flag     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
   const locLink  = ev.loc
-    ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShort)}</a>${flag ? ' <span style="position:relative;top:3px">' + flag + '</span>' : ''}`
+    ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShort)}</a>${flag ? ' <span style="position:relative;top:3px">' + flag + '</span>' : ''}`
     : '';
 
   const titleEl = document.createElement('div');
@@ -342,6 +349,11 @@ function renderSchedule(events) {
     return;
   }
 
+  const subtitle = document.createElement('p');
+  subtitle.className = 'section-subtitle';
+  subtitle.textContent = 'Repeating classes & jams in the Copenhagen area';
+  main.appendChild(subtitle);
+
   for (const ev of unique) {
     const card = document.createElement('div');
     card.className = 'schedule-card';
@@ -349,7 +361,7 @@ function renderSchedule(events) {
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
-    recurCol.innerHTML = `<span class="recur-icon">↻</span><span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span><span class="recur-label">${escHtml(fmtTimeRange(ev))}</span>`;
+    recurCol.innerHTML = `<span class="recur-label">${escHtml(rruleToHuman(ev._rrule))}</span><span class="recur-label">${escHtml(fmtTimeRange(ev))}</span>`;
 
     const infoCol = document.createElement('div');
     infoCol.className = 'info-col';
@@ -357,7 +369,7 @@ function renderSchedule(events) {
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
     const flagS     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
     const locLinkS  = ev.loc
-      ? ` <a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">@ ${escHtml(locShortS)}</a>${flagS ? ' <span style="position:relative;top:3px">' + flagS + '</span>' : ''}`
+      ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShortS)}</a>${flagS ? ' <span style="position:relative;top:3px">' + flagS + '</span>' : ''}`
       : '';
 
     const titleEl = document.createElement('div');
@@ -421,10 +433,10 @@ function applyFilter() {
   const future = allEvents.filter(e => !isPast(e));
   if (filter === 'schedule') {
     renderSchedule(future);
+  } else if (filter === 'non-recurring') {
+    renderEvents(future.filter(e => !e.recur), 'Workshops, intensives & special events');
   } else {
-    let evs = future;
-    if (filter === 'non-recurring') evs = evs.filter(e => !e.recur);
-    renderEvents(evs);
+    renderEvents(future);
   }
 }
 
@@ -444,7 +456,7 @@ function initCalendar(raw) {
     const scheduleCount = new Set(futureEvents.filter(e => e.recur).map(e => e.uid)).size;
     document.getElementById('btn-schedule').textContent = `Weekly (${scheduleCount})`;
     document.getElementById('btn-non-recurring').textContent = `Other (${nonRecurringCount})`;
-    document.getElementById('btn-recurring').textContent = `All (${futureEvents.length})`;
+    document.getElementById('btn-recurring').textContent = 'All';
     statusEl.style.display = 'none';
     applyFilter();
   } catch (err) {

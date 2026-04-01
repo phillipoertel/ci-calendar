@@ -88,6 +88,15 @@
       display: none;
     }
 
+    /* ── Section subtitle ────────────────────────── */
+    .section-subtitle {
+      text-align: center;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+
     /* ── Month group ─────────────────────────────── */
     .month-group { margin-bottom: 2rem; }
 
@@ -146,6 +155,7 @@
       text-align: center;
       letter-spacing: 0.02em;
       word-break: break-word;
+      padding-top: 3px;
     }
 
     /* ── Event card ──────────────────────────────── */
