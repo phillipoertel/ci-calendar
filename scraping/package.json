@@ -1,0 +1,11 @@
+{
+  "name": "ci-calendar-scraping",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "scrape": "node scrape-events.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}
