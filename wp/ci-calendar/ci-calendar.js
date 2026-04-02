@@ -154,8 +154,13 @@ function fmtTime(d) {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function linkifyDesc(text) {
-  return text.replace(/https?:\/\/[^\s<)]+/g, '<a href="$&" target="_blank" rel="noopener">More info</a>');
+function extractUrl(text) {
+  const m = text.match(/https?:\/\/[^\s<)]+/);
+  return m ? m[0] : null;
+}
+
+function stripUrls(text) {
+  return text.replace(/https?:\/\/[^\s<)]+/g, '').trim();
 }
 
 function fmtDateTime(d) {
@@ -272,15 +277,22 @@ function buildCard(ev) {
   infoCol.appendChild(titleEl);
   infoCol.appendChild(meta);
 
-  if (ev.desc.trim()) {
+  const infoUrl = extractUrl(ev.desc);
+  const descText = stripUrls(ev.desc.trim());
+  if (descText || infoUrl) {
     const descEl = document.createElement('div');
     descEl.className = 'event-desc';
-    descEl.innerHTML = linkifyDesc(ev.desc.trim());
+    let html = descText;
+    if (infoUrl) {
+      html += `${descText ? ' ' : ''}<a class="event-info-link" href="${escHtml(infoUrl)}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
+    }
+    descEl.innerHTML = html;
     infoCol.appendChild(descEl);
   }
 
   card.appendChild(dateCol);
   card.appendChild(infoCol);
+
   return card;
 }
 
@@ -379,10 +391,16 @@ function renderSchedule(events) {
 
     infoCol.appendChild(titleEl);
 
-    if (ev.desc.trim()) {
+    const infoUrlS = extractUrl(ev.desc);
+    const descTextS = stripUrls(ev.desc.trim());
+    if (descTextS || infoUrlS) {
       const descEl = document.createElement('div');
       descEl.className = 'event-desc';
-      descEl.innerHTML = linkifyDesc(ev.desc.trim());
+      let html = descTextS;
+      if (infoUrlS) {
+        html += `${descTextS ? ' ' : ''}<a class="event-info-link" href="${escHtml(infoUrlS)}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
+      }
+      descEl.innerHTML = html;
       infoCol.appendChild(descEl);
     }
 
