@@ -279,19 +279,25 @@ function buildCard(ev) {
 
   const infoUrl = extractUrl(ev.desc);
   const descText = stripUrls(ev.desc.trim());
-  if (descText || infoUrl) {
+  if (descText) {
     const descEl = document.createElement('div');
     descEl.className = 'event-desc';
-    let html = descText;
-    if (infoUrl) {
-      html += `${descText ? ' ' : ''}<a class="event-info-link" href="${escHtml(infoUrl)}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
-    }
-    descEl.innerHTML = html;
+    descEl.innerHTML = descText;
     infoCol.appendChild(descEl);
   }
 
   card.appendChild(dateCol);
   card.appendChild(infoCol);
+
+  if (infoUrl) {
+    const infoLink = document.createElement('a');
+    infoLink.className = 'event-info-link';
+    infoLink.href = infoUrl;
+    infoLink.target = '_blank';
+    infoLink.rel = 'noopener';
+    infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    card.appendChild(infoLink);
+  }
 
   return card;
 }
@@ -393,19 +399,26 @@ function renderSchedule(events) {
 
     const infoUrlS = extractUrl(ev.desc);
     const descTextS = stripUrls(ev.desc.trim());
-    if (descTextS || infoUrlS) {
+    if (descTextS) {
       const descEl = document.createElement('div');
       descEl.className = 'event-desc';
-      let html = descTextS;
-      if (infoUrlS) {
-        html += `${descTextS ? ' ' : ''}<a class="event-info-link" href="${escHtml(infoUrlS)}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>`;
-      }
-      descEl.innerHTML = html;
+      descEl.innerHTML = descTextS;
       infoCol.appendChild(descEl);
     }
 
     card.appendChild(recurCol);
     card.appendChild(infoCol);
+
+    if (infoUrlS) {
+      const infoLink = document.createElement('a');
+      infoLink.className = 'event-info-link';
+      infoLink.href = infoUrlS;
+      infoLink.target = '_blank';
+      infoLink.rel = 'noopener';
+      infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+      card.appendChild(infoLink);
+    }
+
     main.appendChild(card);
   }
 
@@ -452,7 +465,7 @@ function applyFilter() {
   if (filter === 'schedule') {
     renderSchedule(future);
   } else if (filter === 'non-recurring') {
-    renderEvents(future.filter(e => !e.recur), 'Workshops, intensives & special events');
+    renderEvents(future.filter(e => !e.recur), 'Workshops, festivals, intensives & special events');
   } else {
     renderEvents(future);
   }
