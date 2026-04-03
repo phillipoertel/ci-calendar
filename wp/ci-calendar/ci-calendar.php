@@ -2,7 +2,7 @@
 
 /**
 * Plugin Name: Google CI Calendar Integration
-* Version: 1.2
+* Version: 1.3
 * Description: Google Calendar integration
 */
 
