@@ -411,7 +411,7 @@
     </div>
     <div class="subscribe-bar">
       <button class="info-link" onclick="openSubscribeModal()">Subscribe</button>
-      <button class="info-link" onclick="openInfoModal('send-update')">Suggest a change</button>
+      <button class="info-link" onclick="openInfoModal('send-update')">Contribute</button>
     </div>
   </div>
 
@@ -902,7 +902,7 @@ function renderSchedule(events) {
 // ─── Info modal ────────────────────────────────────────────────────────────
 const INFO_CONTENT = {
   'send-update': {
-    title: 'Suggest a change',
+    title: 'Contribute',
     body: () => {
       const em = ['ci-copenhagen', 'email', 'com'].join('\u0040').replace('\u0040email', '.email@');
       // em = ci-copenhagen@email.com, assembled at runtime

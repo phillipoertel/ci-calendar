@@ -1,6 +1,32 @@
-# How this works
+# CI Calendar
 
-1. the list of events is maintained in a Google calendar at ...
-2. the file calendar.html has Javascript to fetch the calendar and render it in a simple list
-3. in order to load the google calendar file with Javascript, a proxy script is used. this is cloudflare-worker.js, which is hosted at `https://dash.cloudflare.com/b4532d671e9a6172552280b72a11fb60/workers/services/view/corsproxy/production`.
-4. in local development, the file index.html can be used to preview the iframe embedding. Start with `python3 -m http.server` and then go to `http://localhost:8000/index.html`.
+A calendar for Contact Improvisation events in the Copenhagen area, displayed on [danceshare.dk](https://danceshare.dk).
+
+## How it works
+
+1. Events are maintained by hand in a [Google Calendar](https://calendar.google.com).
+2. A WordPress plugin (`wp/ci-calendar/`) fetches the calendar via its public iCal URL, parses the events, and renders them on the page.
+3. The plugin is activated via the `[ci-calendar]` shortcode in any WordPress page or post.
+
+## WordPress plugin
+
+The plugin consists of:
+
+- `ci-calendar.php` — registers the shortcode, fetches the iCal feed server-side, and injects the HTML/CSS/JS.
+- `ci-calendar.html` — the page markup (tab nav, modals).
+- `ci-calendar.js` — parses the iCal data and renders event cards with three views: Weekly (recurring), Other (non-recurring), and All.
+- `ci-calendar.css` — all styling.
+- `country-flags.js` — maps European country names (English, German, Danish) to flag emojis and ISO codes, used to display location info for non-Copenhagen events.
+
+## Local development
+
+Start a local server and preview with `calendar-cicph.html`:
+
+```
+python3 -m http.server
+open http://localhost:8000/calendar-cicph.html
+```
+
+## Legacy
+
+The standalone version previously used a Cloudflare Worker (`cloudflare-worker.js`) as a CORS proxy to fetch the calendar client-side. The WordPress plugin fetches the iCal feed server-side via `wp_remote_get`, so the proxy is no longer needed.

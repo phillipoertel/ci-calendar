@@ -200,6 +200,22 @@ function escHtml(s) {
 }
 
 const clockIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+const pinIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon fill="none" points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`;
+
+function extractCity(loc) {
+  if (!loc) return '';
+  const parts = loc.split(',').map(p => p.trim());
+  let city = '';
+  if (parts.length >= 3) city = parts[parts.length - 2];
+  else if (parts.length === 2) city = parts[1];
+  return city.replace(/^[\d\s]+/, '');
+}
+
+function isCopenhagen(loc) {
+  if (!loc) return true;
+  const l = loc.toLowerCase();
+  return l.includes('copenhagen') || l.includes('københavn') || l.includes('kopenhagen');
+}
 
 function renderEvents(events, subtitle) {
   const main = document.getElementById('ci-calendar-main');
@@ -258,9 +274,12 @@ function buildCard(ev) {
   infoCol.className = 'info-col';
 
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
-  const flag     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
+  const city     = extractCity(ev.loc);
+  const showCity = ev.loc && !isCopenhagen(ev.loc) && city;
+  const cc = showCity ? countryCode(ev.loc) : '';
+  const cityChip = showCity ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(city)}${cc ? ' (' + cc + ')' : ''}</span>` : '';
   const locLink  = ev.loc
-    ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShort)}</a>${flag ? ' <span style="position:relative;top:3px">' + flag + '</span>' : ''}`
+    ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShort)}</a>${cityChip}`
     : '';
 
   const titleEl = document.createElement('div');
@@ -295,8 +314,12 @@ function buildCard(ev) {
     infoLink.href = infoUrl;
     infoLink.target = '_blank';
     infoLink.rel = 'noopener';
-    infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
     card.appendChild(infoLink);
+    card.classList.add('has-link');
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('a')) window.open(infoUrl, '_blank', 'noopener');
+    });
   }
 
   return card;
@@ -375,7 +398,12 @@ function renderSchedule(events) {
   for (const ev of unique) {
     const card = document.createElement('div');
     card.className = 'schedule-card';
+    const evDow = (ev.start.date.getDay() + 6) % 7;
+    const todayDow = (today.getDay() + 6) % 7;
     if (ev.start.date.getDay() === today.getDay()) card.classList.add('is-today');
+    if (evDow < todayDow || (evDow === todayDow && ev.end && !ev.end.allDay && ev.end.date.getHours() * 60 + ev.end.date.getMinutes() < new Date().getHours() * 60 + new Date().getMinutes())) {
+      card.classList.add('is-past');
+    }
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
@@ -385,9 +413,12 @@ function renderSchedule(events) {
     infoCol.className = 'info-col';
 
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
-    const flagS     = ev.loc && !isDanish(ev.loc) ? countryFlag(ev.loc) : '';
+    const cityS     = extractCity(ev.loc);
+    const showCityS = ev.loc && !isCopenhagen(ev.loc) && cityS;
+    const ccS = showCityS ? countryCode(ev.loc) : '';
+    const cityChipS = showCityS ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(cityS)}${ccS ? ' (' + ccS + ')' : ''}</span>` : '';
     const locLinkS  = ev.loc
-      ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShortS)}</a>${flagS ? ' <span style="position:relative;top:3px">' + flagS + '</span>' : ''}`
+      ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShortS)}</a>${cityChipS}`
       : '';
 
     const titleEl = document.createElement('div');
@@ -415,8 +446,12 @@ function renderSchedule(events) {
       infoLink.href = infoUrlS;
       infoLink.target = '_blank';
       infoLink.rel = 'noopener';
-      infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+      infoLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
       card.appendChild(infoLink);
+      card.classList.add('has-link');
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('a')) window.open(infoUrlS, '_blank', 'noopener');
+      });
     }
 
     main.appendChild(card);
@@ -428,10 +463,10 @@ function renderSchedule(events) {
 // ─── Info modal ────────────────────────────────────────────────────────────
 const INFO_CONTENT = {
   'send-update': {
-    title: 'Suggest a change',
+    title: 'Contribute',
     body: () => {
       const em = ['ci-copenhagen', 'phillipoertel.com'].join('\u0040');
-      return `Please send us your updates to <a href="mailto:${em}">${em}</a>. You\u2019re also welcome to help maintain the Google calendar, just write to us.`;
+      return `Please send us your updates to <a href="mailto:${em}">${em}</a>. You\u2019re also welcome to help maintain the Google calendar, just write to us.<p>The code is on <a href="https://github.com/phillipoertel/ci-calendar" target="_blank" rel="noopener">GitHub</a>.`;
     },
   },
 };

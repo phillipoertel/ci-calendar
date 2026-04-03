@@ -126,10 +126,15 @@
     }
 
     .schedule-card:hover { border-color: var(--accent); }
+    .schedule-card.has-link { cursor: pointer; }
 
     .schedule-card.is-today {
       background: var(--today-bg);
       border-color: var(--today-acc);
+    }
+
+    .schedule-card.is-past {
+      opacity: 0.45;
     }
 
     .recur-col {
@@ -173,6 +178,7 @@
     }
 
     .event-card:hover { border-color: var(--accent); }
+    .event-card.has-link { cursor: pointer; }
 
     .event-card.is-today {
       background: var(--today-bg);
@@ -245,6 +251,8 @@
     }
 
     .meta-chip svg { flex-shrink: 0; opacity: 0.7; }
+
+    .loc-chip { display: inline-flex; margin-left: 0.3rem; white-space: nowrap; }
 
     .event-info-link {
       display: flex;
