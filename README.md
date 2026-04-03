@@ -16,17 +16,12 @@ The plugin consists of:
 - `ci-calendar.html` — the page markup (tab nav, modals).
 - `ci-calendar.js` — parses the iCal data and renders event cards with three views: Weekly (recurring), Other (non-recurring), and All.
 - `ci-calendar.css` — all styling.
-- `country-flags.js` — maps European country names (English, German, Danish) to flag emojis and ISO codes, used to display location info for non-Copenhagen events.
 
 ## Local development
 
-Start a local server and preview with `calendar-cicph.html`:
+The `wp/` subfolder contains a Docker setup for running WordPress locally:
 
 ```
-python3 -m http.server
-open http://localhost:8000/calendar-cicph.html
+cd wp
+docker compose up
 ```
-
-## Legacy
-
-The standalone version previously used a Cloudflare Worker (`cloudflare-worker.js`) as a CORS proxy to fetch the calendar client-side. The WordPress plugin fetches the iCal feed server-side via `wp_remote_get`, so the proxy is no longer needed.

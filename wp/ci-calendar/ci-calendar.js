@@ -2,11 +2,6 @@
 const isDev = window.location.hostname !== 'danceshare.dk';
 function log(...args) { if (isDev) console.log('[ci-calendar]', ...args); }
 
-function isDanish(loc) {
-  const l = loc.toLowerCase();
-  return l.includes('denmark') || l.includes('danmark') || l.includes('dänemark');
-}
-
 // ─── State ─────────────────────────────────────────────────────────────────
 let allEvents = [];
 let filter    = 'schedule';
@@ -276,8 +271,7 @@ function buildCard(ev) {
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
   const city     = extractCity(ev.loc);
   const showCity = ev.loc && !isCopenhagen(ev.loc) && city;
-  const cc = showCity ? countryCode(ev.loc) : '';
-  const cityChip = showCity ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(city)}${cc ? ' (' + cc + ')' : ''}</span>` : '';
+  const cityChip = showCity ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(city)}</span>` : '';
   const locLink  = ev.loc
     ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShort)}</a>${cityChip}`
     : '';
@@ -415,8 +409,7 @@ function renderSchedule(events) {
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
     const cityS     = extractCity(ev.loc);
     const showCityS = ev.loc && !isCopenhagen(ev.loc) && cityS;
-    const ccS = showCityS ? countryCode(ev.loc) : '';
-    const cityChipS = showCityS ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(cityS)}${ccS ? ' (' + ccS + ')' : ''}</span>` : '';
+    const cityChipS = showCityS ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(cityS)}</span>` : '';
     const locLinkS  = ev.loc
       ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShortS)}</a>${cityChipS}`
       : '';

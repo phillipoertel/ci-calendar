@@ -23,7 +23,6 @@ function ci_calendar_shortcode() {
     ob_start(); ?>
     <link rel="stylesheet" href="<?php echo esc_url(plugin_dir_url(__FILE__) . 'ci-calendar.css'); ?>">
     <?php echo file_get_contents(plugin_dir_path(__FILE__) . 'ci-calendar.html'); ?>
-    <script src="<?php echo esc_url(plugin_dir_url(__FILE__) . 'country-flags.js'); ?>"></script>
     <script src="<?php echo esc_url(plugin_dir_url(__FILE__) . 'ci-calendar.js'); ?>"></script>
     <script>
         initCalendar(<?php echo json_encode($ical); ?>);
