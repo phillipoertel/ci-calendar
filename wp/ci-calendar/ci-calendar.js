@@ -203,7 +203,10 @@ function extractCity(loc) {
   let city = '';
   if (parts.length >= 3) city = parts[parts.length - 2];
   else if (parts.length === 2) city = parts[1];
-  return city.replace(/^[\d\s]+/, '');
+  city = city.replace(/^[\d\s]+/, '');
+  const code = typeof countryCode === 'function' ? countryCode(loc) : '';
+  if (code) city += ' (' + code + ')';
+  return city;
 }
 
 function isCopenhagen(loc) {
@@ -270,10 +273,10 @@ function buildCard(ev) {
 
   const locShort = ev.loc ? ev.loc.split(',')[0].trim() : '';
   const city     = extractCity(ev.loc);
-  const showCity = ev.loc && !isCopenhagen(ev.loc) && city;
-  const cityChip = showCity ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(city)}</span>` : '';
+  const nonLocal = ev.loc && !isCopenhagen(ev.loc) && city;
+  const locLabel = nonLocal ? city : locShort;
   const locLink  = ev.loc
-    ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShort)}</a>${cityChip}`
+    ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locLabel)}</a>`
     : '';
 
   const titleEl = document.createElement('div');
@@ -395,9 +398,6 @@ function renderSchedule(events) {
     const evDow = (ev.start.date.getDay() + 6) % 7;
     const todayDow = (today.getDay() + 6) % 7;
     if (ev.start.date.getDay() === today.getDay()) card.classList.add('is-today');
-    if (evDow < todayDow || (evDow === todayDow && ev.end && !ev.end.allDay && ev.end.date.getHours() * 60 + ev.end.date.getMinutes() < new Date().getHours() * 60 + new Date().getMinutes())) {
-      card.classList.add('is-past');
-    }
 
     const recurCol = document.createElement('div');
     recurCol.className = 'recur-col';
@@ -408,10 +408,10 @@ function renderSchedule(events) {
 
     const locShortS = ev.loc ? ev.loc.split(',')[0].trim() : '';
     const cityS     = extractCity(ev.loc);
-    const showCityS = ev.loc && !isCopenhagen(ev.loc) && cityS;
-    const cityChipS = showCityS ? ` <span class="meta-chip loc-chip">${pinIcon} ${escHtml(cityS)}</span>` : '';
+    const nonLocalS = ev.loc && !isCopenhagen(ev.loc) && cityS;
+    const locLabelS = nonLocalS ? cityS : locShortS;
     const locLinkS  = ev.loc
-      ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locShortS)}</a>${cityChipS}`
+      ? `<a class="event-loc-link" href="https://www.google.com/maps?q=${encodeURIComponent(ev.loc)}" target="_blank" rel="noopener">${escHtml(locLabelS)}</a>`
       : '';
 
     const titleEl = document.createElement('div');
