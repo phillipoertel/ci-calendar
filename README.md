@@ -25,3 +25,6 @@ The `wp/` subfolder contains a Docker setup for running WordPress locally:
 cd wp
 docker compose up
 ```
+
+- If you're lucky, you'll now have a wordpress installation running at http://localhost:8080/ ;-) 
+- Then use a wordpress plugin like Duplicator to clone the site you want to work on to your local docker setup.
