@@ -1,39 +1,50 @@
-# CI Calendar
+This is a Wordpress plugin which renders Contact Improvisation events from a Google Calendar, currently embedded on [danceshare.dk](https://danceshare.dk).
 
-A calendar for Contact Improvisation events in the Copenhagen area, displayed on [danceshare.dk](https://danceshare.dk).
-
-## How it works
+# How it works
 
 1. Events are maintained by hand in a [Google Calendar](https://calendar.google.com).
-2. A WordPress plugin (`wp/ci-calendar/`) fetches the calendar via its public iCal URL, parses the events, and renders them on the page.
+2. this WordPress plugin fetches the calendar via its public iCal URL, parses the events, and renders them on the page.
 3. The plugin is activated via the `[ci-calendar]` shortcode in any WordPress page or post.
 
-## WordPress plugin
+# WordPress plugin structure
 
 The plugin consists of:
 
+The plugin code lives in `wp`
 - `ci-calendar.php` — registers the shortcode, fetches the iCal feed server-side, and injects the HTML/CSS/JS.
 - `ci-calendar.html` — the page markup (tab nav, modals).
 - `ci-calendar.js` — parses the iCal data and renders event cards with three views: Weekly (recurring), Other (non-recurring), and All.
 - `ci-calendar.css` — all styling.
 
-## Editing Google Calendar events
+# How to develop the plugin locally
+
+The `wp/` subfolder contains a Docker setup for running WordPress locally:
+
+```
+cd wp
+docker compose up
+```
+
+- If you're lucky, you'll now have a wordpress installation running at http://localhost:8080/ ;-) 
+- Then use a wordpress plugin like Duplicator to clone the site you want to work on to your local docker setup.
+
+# Editing Google Calendar events
 
 How the fields of a Google Calendar event are used by the plugin (see `ci-calendar.js`):
 
-#### Title (event summary) 
+### Title (event summary) 
 
 Taken from `SUMMARY` and shown as the card headline. Keep it short, since the location is appended after it automatically.
 
-#### Description
+### Description
 
 Taken from `DESCRIPTION` and injected as **raw HTML** into the card (`event-desc`), which is what Google Calendar's rich-text editor produces. To keep the calendar clean, it's best use minimal formatting only (maybe only italics). Because it is not escaped, only trusted people should edit the calendar.
 
-#### Event link
+### Event link
 
 The *first* `http(s)://` URL found anywhere in the description becomes the event's link. Put the URL on its own line at the end of the description.
 
-#### Location
+### Location
 
 Comes from the event's `LOCATION` field. When editing an event, start with the venue name ("Forsøgsstationen") and use the autocomplete dropdown, so Google stores a fully qualified  address. Otherwise the map link might go elsewhere (or nowhere). 
 
@@ -61,15 +72,3 @@ Times with a `Z` suffix are treated as UTC and rendered in the visitor's local t
 **Past events**: anything whose end (or start, if there is no end) is before today is hidden from all views.
 
 **Feed**: the calendar is public and read via its iCal URL (`.../public/basic.ics`), fetched server-side on each page render with no caching layer of its own. Only events present in that feed appear; the feed's own horizon limits how far ahead single events show up.
-
-## Local development
-
-The `wp/` subfolder contains a Docker setup for running WordPress locally:
-
-```
-cd wp
-docker compose up
-```
-
-- If you're lucky, you'll now have a wordpress installation running at http://localhost:8080/ ;-) 
-- Then use a wordpress plugin like Duplicator to clone the site you want to work on to your local docker setup.
