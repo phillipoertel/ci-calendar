@@ -8,9 +8,8 @@ This is a Wordpress plugin which renders Contact Improvisation events from a Goo
 
 # WordPress plugin structure
 
-The plugin consists of:
+The plugin code lives in `wp/ci-calendar` and consists of:
 
-The plugin code lives in `wp`
 - `ci-calendar.php` — registers the shortcode, fetches the iCal feed server-side, and injects the HTML/CSS/JS.
 - `ci-calendar.html` — the page markup (tab nav, modals).
 - `ci-calendar.js` — parses the iCal data and renders event cards with three views: Weekly (recurring), Other (non-recurring), and All.
@@ -26,7 +25,7 @@ docker compose up
 ```
 
 - If you're lucky, you'll now have a wordpress installation running at http://localhost:8080/ ;-) 
-- Then use a wordpress plugin like Duplicator to clone the site you want to work on to your local docker setup.
+- Then use a wordpress plugin like Duplicator to clone the site you want to work on into your local docker setup.
 
 # Editing Google Calendar events
 
