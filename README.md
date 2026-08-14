@@ -29,6 +29,10 @@ docker compose up
 
 # Editing Google Calendar events
 
+### Previewing
+
+All calendar changes go live immediately, so just change and save and event and reload the page which embeds the plugin.
+
 How the fields of a Google Calendar event are used by the plugin (see `ci-calendar.js`):
 
 ### Title (event summary) 
