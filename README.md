@@ -35,7 +35,7 @@ The *first* `http(s)://` URL found anywhere in the description becomes the event
 
 #### Location
 
-Comes from the event's `LOCATION` field. When editing an event, use the autocomplete dropdown to select a fullly qualified  address. otherwise the map link might go elsewhere (or nowhere). The label shown depends on where the event is:
+Comes from the event's `LOCATION` field. When editing an event, use the autocomplete dropdown to select a fully qualified  address. otherwise the map link might go elsewhere (or nowhere). The label shown depends on where the event is:
   - Copenhagen events (location contains "copenhagen", "københavn" or "kopenhagen" — or has no location at all) show the **venue name**, i.e. the part before the first comma.
   - Non-Copenhagen events show the **city**: the second-to-last comma-separated part (or the last part when there are only two), with any leading street numbers stripped.
   - A country suffix is appended when the address names a European country, e.g. `Berlin (DE)`. The mapping lives in `country-codes.js` and matches English, German and Danish country names. Denmark is deliberately excluded, so Danish events outside Copenhagen show just the city.
