@@ -27,7 +27,7 @@ Taken from `SUMMARY` and shown as the card headline. Keep it short, since the lo
 
 #### Description
 
-Taken from `DESCRIPTION` and injected as **raw HTML** into the card (`event-desc`), which is what Google Calendar's rich-text editor produces. Bold, links and line breaks written in the Google editor render as-is. Because it is not escaped, only trusted people should edit the calendar.
+Taken from `DESCRIPTION` and injected as **raw HTML** into the card (`event-desc`), which is what Google Calendar's rich-text editor produces. To keep the calendar clean, it's best use minimal formatting only (maybe only italics). Because it is not escaped, only trusted people should edit the calendar.
 
 #### Event link
 
@@ -35,14 +35,16 @@ The *first* `http(s)://` URL found anywhere in the description becomes the event
 
 #### Location
 
-Comes from the event's `LOCATION` field. When editing an event, use the autocomplete dropdown to select a fully qualified  address. otherwise the map link might go elsewhere (or nowhere). The label shown depends on where the event is:
+Comes from the event's `LOCATION` field. When editing an event, start with the venue name ("Forsøgsstationen") and use the autocomplete dropdown, so Google stores a fully qualified  address. Otherwise the map link might go elsewhere (or nowhere). 
+
+The label shown depends on where the event is:
   - Copenhagen events (location contains "copenhagen", "københavn" or "kopenhagen" — or has no location at all) show the **venue name**, i.e. the part before the first comma.
-  - Non-Copenhagen events show the **city**: the second-to-last comma-separated part (or the last part when there are only two), with any leading street numbers stripped.
+  - Non-Copenhagen events show the **city**: the second-to-last comma-separated part of the autocompleted address (or the last part when there are only two), with any leading street numbers stripped.
   - A country suffix is appended when the address names a European country, e.g. `Berlin (DE)`. The mapping lives in `country-codes.js` and matches English, German and Danish country names. Denmark is deliberately excluded, so Danish events outside Copenhagen show just the city.
 
-### Recurring vs. one-off ("other") events
+### Weekly recurring vs "Other" events
 
-An event is treated as recurring purely by the presence of an `RRULE` (repetition rule) in the iCal feed, i.e. whether "Repeat" was set in Google Calendar. **Weekly** shows each recurring series once (deduplicated by `UID`, sorted Mon–Sun), **Other** shows only non-recurring events, and **All** shows every expanded occurrence grouped by month.
+An event is treated as weekly by the presence of an `RRULE` (repetition rule) in the iCal feed, i.e. whether "Repeat" was set in Google Calendar. The **weekly** tab shows each recurring series once (deduplicated by `UID`, sorted Mon–Sun), **other** shows only non-recurring events, and **all** shows every expanded occurrence grouped by month.
 
 The `RRULE` is parsed into its parts (`FREQ`, `INTERVAL`, `BYDAY`, `BYMONTHDAY`) and turned into human text like "Every Tuesday", "Monthly on the 2nd Sunday", "Every 2 weeks on Monday".
 
