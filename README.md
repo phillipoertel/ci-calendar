@@ -3,7 +3,7 @@ This is a Wordpress plugin which renders Contact Improvisation events from a Goo
 # How it works
 
 1. Events are maintained by hand in this public [Google Calendar](https://calendar.google.com/calendar/embed?src=7cd67ecc1e05891f0a89b08a145dca65102fb64fa16b18e4385f89895d2ac18f%40group.calendar.google.com&ctz=Europe%2FBerlin).
-2. this WordPress plugin fetches the calendar via its public iCal URL, parses the events, and renders them on the page.
+2. this WordPress plugin fetches the calendar via its public iCal URL, parses the events, and renders them on the page. It also does some "smart" transformations, like detecting recurring events and displaying them in a dedicated tab.
 3. The plugin is activated via the `[ci-calendar]` shortcode in any WordPress page or post.
 
 # WordPress plugin structure
