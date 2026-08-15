@@ -31,7 +31,7 @@ docker compose up
 
 ### Previewing
 
-All calendar changes go live immediately, so just change and save an event and reload the calendar.
+All event changes go live immediately, so just update an event and reload the calendar.
 
 How the fields of a Google Calendar event are used by the plugin (see `ci-calendar.js`):
 
